@@ -56,6 +56,44 @@ pub(crate) fn enable_logging(verbose: bool) {
     }
 }
 
+pub(crate) fn enable_spaces_logging(verbose: bool) {
+    let key = "SPACES_LOG";
+    let value = match env::var(key) {
+        Ok(val) => val,
+        Err(_) => "".to_string(),
+    };
+
+    if value.len() > 0 {
+        tracing_subscriber::fmt()
+            .with_env_filter(EnvFilter::from_default_env())
+            .init();
+        tracing::info!("Used SPACES_LOG={} env variable to set logging output.", value);
+        if verbose {
+            tracing::warn!("SPACES_LOG= is set. Ignore --verbose flag.")
+        }
+        return;
+    }
+
+    let regular_filter = tracing_subscriber::filter::Targets::new()
+        .with_target("spaces", Level::INFO);
+
+    let verbose_filter = tracing_subscriber::filter::Targets::new()
+        .with_target("spaces", Level::DEBUG);
+
+    let mut filter: Targets = regular_filter;
+    if verbose {
+        filter = verbose_filter;
+    }
+
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .with(filter);
+
+    if verbose {
+        tracing::info!("Spaces Verbose mode enabled.");
+    }
+}
+
 /// Wait until the user hits CTRL+C
 pub(crate) async fn wait_on_ctrl_c() {
     match tokio::signal::ctrl_c().await {

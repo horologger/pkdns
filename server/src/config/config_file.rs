@@ -15,6 +15,7 @@ pub struct PkdnsConfig {
     pub general: General,
     pub dns: Dns,
     pub dht: Dht,
+    pub spaces: Spaces,
 }
 
 impl Default for PkdnsConfig {
@@ -23,6 +24,7 @@ impl Default for PkdnsConfig {
             general: General::default(),
             dns: Dns::default(),
             dht: Dht::default(),
+            spaces: Spaces::default(),
         }
     }
 }
@@ -207,6 +209,21 @@ impl Default for Dht {
         }
     }
 }
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct Spaces {
+    #[serde(default = "default_false")]
+    pub spaces_verbose: bool,
+}
+
+impl Default for Spaces {
+    fn default() -> Self {
+        Self {
+            spaces_verbose: default_false(),
+        }
+    }
+}
+
 
 /// Read the pkdns config file.
 pub fn read_config(path: &Path) -> Result<PkdnsConfig, anyhow::Error> {

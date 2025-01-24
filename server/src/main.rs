@@ -1,7 +1,7 @@
 use clap::Parser;
 use config::{read_or_create_config, read_or_create_from_dir, update_global_config};
 use dns_over_https::run_doh_server;
-use helpers::{enable_logging, set_full_stacktrace_as_default, wait_on_ctrl_c};
+use helpers::{enable_logging, set_full_stacktrace_as_default, wait_on_ctrl_c, enable_spaces_logging};
 use resolution::DnsSocketBuilder;
 
 use std::{error::Error, net::SocketAddr, path::PathBuf};
@@ -63,6 +63,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     tracing::info!("Starting pkdns v{VERSION}");
     tracing::debug!("Configuration:\n{}", toml::to_string(&config).unwrap());
     tracing::info!("Forward ICANN queries to {}", config.general.forward);
+
+    enable_spaces_logging(config.spaces.spaces_verbose);
+
 
     // Exit the main thread if anything panics
     let orig_hook = std::panic::take_hook();
