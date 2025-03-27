@@ -239,6 +239,7 @@ impl PkarrResolver {
         from: Option<IpAddr>,
     ) -> std::prelude::v1::Result<Vec<u8>, CustomHandlerError> {
         let mut request = query.packet.parsed().clone();
+
         let mut removed_tld = self.remove_tld_if_necessary(&mut request);
         if removed_tld {
             tracing::trace!("Removed tld from question: {:?}", request.questions.first().unwrap());
@@ -249,11 +250,18 @@ impl PkarrResolver {
             .first()
             .expect("No question in query in pkarr_resolver.")
             .clone();
+
         let labels = question.qname.get_labels();
         let mut public_key = labels
             .last()
             .expect("Question labels with no domain in pkarr_resolver")
             .to_string();
+
+        // println!("xPubKey:{public_key}");
+
+        if (public_key.contains("@")) {
+            println!("xSpace:{public_key}");
+        }
 
         let parsed_option = parse_pkarr_uri(&public_key);
         if let Err(e) = parsed_option {

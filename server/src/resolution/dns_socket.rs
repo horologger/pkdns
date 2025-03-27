@@ -284,7 +284,7 @@ impl DnsSocket {
                 "Recursive lookup {i}/{} NS:{next_name_server:?} - {current_query}",
                 self.max_recursion_depth,
             );
-            // println!("Recursive lookup {i}/{} NS:{next_name_server:?} - {:?}", self.max_recursion_depth, current_query.question());
+            // println!("xRecursive lookup {i}/{} NS:{next_name_server:?} - {:?}", self.max_recursion_depth, current_query.question());
             let reply = self.query_me_once(&current_query, from.clone(), next_name_server).await;
             next_name_server = None; // Reset target DNS
             let parsed_reply = Packet::parse(&reply).expect("Reply must be a valid dns packet.");
@@ -447,8 +447,10 @@ impl DnsSocket {
         // Only try the DHT first if no target_dns is manually specified.
         if let None = &target_dns {
             tracing::trace!("Trying to resolve the query with the custom handler.");
+            // println!("xQuery {:?}", query);
             let result = self.pkarr_resolver.resolve(&query, from).await;
             if result.is_ok() {
+                println!("xResult {:?}", query);
                 tracing::trace!("Custom handler resolved the query.");
                 // All good. Handler handled the query
                 return result.unwrap();

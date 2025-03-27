@@ -15,6 +15,8 @@ pub fn parse_pkarr_uri(uri: &str) -> Result<PublicKey, PubkeyParserError> {
         return Err(PubkeyParserError::InvalidKey(decoded.unwrap_err().to_string()));
     };
     let decoded = decoded.unwrap();
+    // println!("URI: {uri}");
+
     if decoded.len() != 32 {
         return Err(PubkeyParserError::InvalidKey(
             "zbase32 pubkey should be 32 bytes but is not.".to_string(),
