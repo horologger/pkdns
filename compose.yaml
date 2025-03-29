@@ -1,6 +1,6 @@
 services:
   pkdns:
-    image: "synonymsoft/pkdns:latest"
+    image: "horologger/pkdns:latest"
     container_name: pkdns
     ports: 
       - "53:53/udp"
