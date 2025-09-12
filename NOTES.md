@@ -1,3 +1,5 @@
+dig @192.168.1.1 -p 5353 +tcp example.com A
+
 cat ~/.pkdns/pkdns.toml
 
 export RUST_LOG=INFO
