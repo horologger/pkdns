@@ -102,3 +102,10 @@ lynx @space
 lynx @test
 lynx @local
 lynx @nostr.com
+
+// ================================
+./target/debug/pkdns --verbose
+
+export RUST_LOG=pkdns=debug,pkarr=debug,mainline=info
+
+./target/debug/pkdns

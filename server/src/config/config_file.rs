@@ -25,6 +25,8 @@ pub struct ConfigToml {
     pub dns: Dns,
     #[serde(default)]
     pub dht: Dht,
+    #[serde(default)]
+    pub spaces: Spaces,
 }
 
 impl ConfigToml {
@@ -200,6 +202,12 @@ pub struct Dht {
     pub top_level_domain: Option<TopLevelDomain>,
 }
 
+#[derive(Debug, Deserialize, Clone)]
+pub struct Spaces {
+    #[serde(default = "default_false")]
+    pub spaces_verbose: bool,
+}
+
 fn deserialize_top_level_domain<'de, D>(deserializer: D) -> Result<Option<TopLevelDomain>, D::Error>
 where
     D: Deserializer<'de>,
@@ -236,6 +244,14 @@ impl Default for Dht {
             dht_query_rate_limit: default_dht_rate_limit(),
             dht_query_rate_limit_burst: default_dht_rate_limit_burst(),
             top_level_domain: default_top_level_domain(),
+        }
+    }
+}
+
+impl Default for Spaces {
+    fn default() -> Self {
+        Self {
+            spaces_verbose: default_false(),
         }
     }
 }

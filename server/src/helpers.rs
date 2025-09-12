@@ -2,10 +2,8 @@ use std::env;
 use tracing::Level;
 use tracing_subscriber::{filter::Targets, layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
-/**
- * Sets `RUST_BACKTRACE=1` as default so we always get a full stacktrace
- * on an error.
- */
+/// Sets `RUST_BACKTRACE=1` as default so we always get a full stacktrace
+/// on an error.
 pub(crate) fn set_full_stacktrace_as_default() {
     let key = "RUST_BACKTRACE";
 
@@ -16,11 +14,13 @@ pub(crate) fn set_full_stacktrace_as_default() {
     env::set_var(key, "1");
 }
 
+/// Enable logging with configurable verbosity.
+/// If RUST_LOG is set, it will be used; otherwise, default levels are applied.
 pub(crate) fn enable_logging(verbose: bool) {
     let key = "RUST_LOG";
     let value = match env::var(key) {
         Ok(val) => val,
-        Err(_) => "".to_string(),
+        Err(_) => String::new(),
     };
 
     if !value.is_empty() {
@@ -54,6 +54,29 @@ pub(crate) fn enable_logging(verbose: bool) {
 
     if verbose {
         tracing::info!("Verbose mode enabled.");
+    }
+}
+
+/// Enable spaces-specific logging with configurable verbosity.
+/// Note: This function assumes the global tracing subscriber is already initialized.
+/// If SPACES_LOG is set, it will be used; otherwise, default levels are applied.
+pub(crate) fn enable_spaces_logging(verbose: bool) {
+    let key = "SPACES_LOG";
+    let value = match env::var(key) {
+        Ok(val) => val,
+        Err(_) => String::new(),
+    };
+
+    if !value.is_empty() {
+        tracing::info!("Used SPACES_LOG={} env variable to set logging output.", value);
+        if verbose {
+            tracing::warn!("SPACES_LOG= is set. Ignore --verbose flag.");
+        }
+        return;
+    }
+
+    if verbose {
+        tracing::info!("Spaces Verbose mode enabled.");
     }
 }
 

@@ -1,6 +1,6 @@
 use clap::Parser;
 use dns_over_https::run_doh_server;
-use helpers::{enable_logging, set_full_stacktrace_as_default, wait_on_ctrl_c};
+use helpers::{enable_logging, set_full_stacktrace_as_default, wait_on_ctrl_c, enable_spaces_logging};
 
 use std::{error::Error, net::SocketAddr, path::PathBuf};
 
@@ -64,6 +64,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let dns_socket = DnsSocket::new(&app_context).await?;
 
     let join_handle = dns_socket.start_receive_loop();
+
+    enable_spaces_logging(app_context.config.spaces.spaces_verbose);
 
     tracing::info!(
         "Listening on {}. Waiting for Ctrl-C...",
